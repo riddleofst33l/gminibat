@@ -43,49 +43,49 @@ static const guchar BAT_MD[] = {255, 165,   0, 255};
 static const guchar BAT_EP[] = {255,   0,   0, 255};
 
 static inline void fillRect(const guchar* c,
-							int x0, int y0, int x1, int y1) {
-	int x, y;
-	guchar *px = gdk_pixbuf_get_pixels(pixbuf);
-	int stride = gdk_pixbuf_get_rowstride(pixbuf);
-	for (x = x0; x <= x1; x++) {
-		for (y = y0; y <= y1; y++) {
-			memcpy(px+(y)*stride+(x)*4, c, 4);
-		}
-	}
+                            int x0, int y0, int x1, int y1) {
+    int x, y;
+    guchar *px = gdk_pixbuf_get_pixels(pixbuf);
+    int stride = gdk_pixbuf_get_rowstride(pixbuf);
+    for (x = x0; x <= x1; x++) {
+        for (y = y0; y <= y1; y++) {
+            memcpy(px+(y)*stride+(x)*4, c, 4);
+        }
+    }
 }
 
 static inline void fillPx(const guchar* c, int x, int y) {
-	guchar *px = gdk_pixbuf_get_pixels(pixbuf);
-	int stride = gdk_pixbuf_get_rowstride(pixbuf);
-	memcpy(px+(y)*stride+(x)*4, c, 4);
+    guchar *px = gdk_pixbuf_get_pixels(pixbuf);
+    int stride = gdk_pixbuf_get_rowstride(pixbuf);
+    memcpy(px+(y)*stride+(x)*4, c, 4);
 }
 
 static inline void drawFrame(void) {
-	fillRect(BAT_LN, 10,  2,  13,  3);
-	fillRect(BAT_LN,  5,  4,  18, 21); 
+    fillRect(BAT_LN, 10,  2,  13,  3);
+    fillRect(BAT_LN,  5,  4,  18, 21); 
 }
 static inline void drawFlash(void) {
-	fillRect(BAT_LN, 10, 11, 11, 12);
-	fillRect(BAT_LN, 12, 12, 13, 13);
-	fillRect(BAT_LN, 11, 10, 12, 10);
-	fillRect(BAT_LN, 11, 14, 13, 14);
-	fillPx(BAT_LN, 12,  9);
-	fillPx(BAT_LN, 13,  8);
-	fillPx(BAT_LN, 12, 15);
-	fillPx(BAT_LN, 10, 16);
+    fillRect(BAT_LN, 10, 11, 11, 12);
+    fillRect(BAT_LN, 12, 12, 13, 13);
+    fillRect(BAT_LN, 11, 10, 12, 10);
+    fillRect(BAT_LN, 11, 14, 13, 14);
+    fillPx(BAT_LN, 12,  9);
+    fillPx(BAT_LN, 13,  8);
+    fillPx(BAT_LN, 12, 15);
+    fillPx(BAT_LN, 10, 16);
 }
 
 // remaining capacity from 0..1
 static inline void drawFill(float remaining) {
-	const guchar* c = BAT_OK;
-	if (remaining < 0.5) c = BAT_MD;
-	if (remaining < 0.2) c = BAT_EP;
-	
-	int top = ((float)FILL_LO+
-		       (float)(FILL_HI-FILL_LO)*remaining);	
+    const guchar* c = BAT_OK;
+    if (remaining < 0.5) c = BAT_MD;
+    if (remaining < 0.2) c = BAT_EP;
+    
+    int top = ((float)FILL_LO+
+               (float)(FILL_HI-FILL_LO)*remaining);    
 
-	fillRect(BAT_BG,  8, FILL_HI, 15, top    );
-	fillRect(c,       8, top,     15, FILL_LO);
+    fillRect(BAT_BG,  8, FILL_HI, 15, top    );
+    fillRect(c,       8, top,     15, FILL_LO);
 }
 
 static void findBattPath(void) {
@@ -106,8 +106,8 @@ static void findBattPath(void) {
  }
 
 static void updateData(int sig) {
-	sig=sig;
-	
+    sig=sig;
+    
     strncpy(capname, syspath, PATH_MAX);
     strcat(capname, "energy_now");
     FILE* fp = fopen(capname, "r");
@@ -120,17 +120,17 @@ static void updateData(int sig) {
     fscanf(fp, "%s", powerstate);
     fclose(fp);
 
-	snprintf(capname, PATH_MAX, "%.1f %%",
-			 (float)currentcap/(float)lastfullcap*100.0);
+    snprintf(capname, PATH_MAX, "%.1f %%",
+             (float)currentcap/(float)lastfullcap*100.0);
     gtk_status_icon_set_tooltip(ico, capname);
 
-	fillRect(CLEAR, 0, 0, 23, 23);
-	drawFrame();
-	drawFill((float)currentcap/(float)lastfullcap);
-	if (strcmp(powerstate, "Charging")==0) drawFlash();
-	
-	gtk_status_icon_set_from_pixbuf(ico, pixbuf);
-	alarm(2);
+    fillRect(CLEAR, 0, 0, 23, 23);
+    drawFrame();
+    drawFill((float)currentcap/(float)lastfullcap);
+    if (strcmp(powerstate, "Charging")==0) drawFlash();
+    
+    gtk_status_icon_set_from_pixbuf(ico, pixbuf);
+    alarm(2);
 }
 
 #if 0
@@ -148,9 +148,9 @@ void tray_icon_on_menu(GtkStatusIcon *status_icon, guint button,
 static GtkStatusIcon *create_tray_icon() {
     GtkStatusIcon *tray_icon;
 
-	pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB,
-							TRUE, 8, PIX_W, PIX_H);
-	
+    pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB,
+                            TRUE, 8, PIX_W, PIX_H);
+    
     tray_icon = gtk_status_icon_new_from_pixbuf(pixbuf);
 
 #if 0
@@ -180,8 +180,8 @@ int main(int argc, char **argv) {
     gtk_init(&argc, &argv);
     ico = create_tray_icon();
 
-	alarm(2);
-	updateData(0);
+    alarm(2);
+    updateData(0);
 
     gtk_main();
 
