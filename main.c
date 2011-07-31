@@ -111,6 +111,12 @@ static void updateData(int sig) {
     strncpy(capname, syspath, PATH_MAX);
     strcat(capname, "energy_now");
     FILE* fp = fopen(capname, "r");
+    if (fp == NULL) {
+        strncpy(capname, syspath, PATH_MAX);
+        strcat(capname, "charge_now");
+        fp = fopen(capname, "r");
+    }
+
     fscanf(fp, "%d", &currentcap);
     fclose(fp);
 
@@ -173,6 +179,11 @@ int main(int argc, char **argv) {
     strncpy(capname, syspath, PATH_MAX);
     strcat(capname, "energy_full");
     FILE* fp = fopen(capname, "r");
+    if (fp == NULL) {
+        strncpy(capname, syspath, PATH_MAX);
+        strcat(capname, "charge_full");
+        fp = fopen(capname, "r");
+    }
     fscanf(fp, "%d", &lastfullcap);
     fclose(fp);
     printf("lastfull: %d\n", lastfullcap);
